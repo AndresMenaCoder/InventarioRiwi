@@ -1,4 +1,4 @@
-from servicios import agregar_producto
+from servicios import agregar_producto , mostrar_inventario
 
 inventario = []
 
@@ -8,3 +8,6 @@ Cantidad_del_producto = int(input("Por favor escribe la cantidad del producto: "
 
 agregar_producto(inventario,nombre_del_producto,precio_del_producto,Cantidad_del_producto)
 print(inventario)
+
+
+mostrar_inventario(inventario)

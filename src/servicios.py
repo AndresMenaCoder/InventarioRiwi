@@ -1,4 +1,4 @@
-def agregar_producto (inventario,nombre,precio,cantidad):
+def agregar_producto(inventario,nombre,precio,cantidad):
     producto ={
     "nombre": nombre,
     "precio": precio,
@@ -9,4 +9,9 @@ def agregar_producto (inventario,nombre,precio,cantidad):
 
 print("Producto agregado correctamente.\n")
 
-inventario = []
+def mostrar_inventario(inventario):
+    if len(inventario) == 0:
+                print("Inventario vacio.\n")
+    else:
+        for producto in inventario:
+                        print(f"Producto: {producto['nombre']} | Precio: {producto['precio']} | Cantidad: {producto['cantidad']}")
