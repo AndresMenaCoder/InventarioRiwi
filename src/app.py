@@ -1,4 +1,5 @@
 from servicios import agregar_producto , mostrar_inventario , buscar_producto , actualizar_producto , eliminar_producto , calcular_estadisticas
+from archivos import guardar_csv
 
 inventario = []
 
@@ -41,9 +42,9 @@ nombre = input("Por escribe el producto que deseas eliminar: ")
 eliminado = eliminar_producto(inventario,nombre)
 
 if eliminado:
-    print("Se ha eliminado el producto")
+    print("Se ha eliminado el producto\n")
 else:
-    print("No se ha encontrado el producto")
+    print("No se ha encontrado el producto\n")
 
 
 estadisticas = calcular_estadisticas(inventario)
@@ -55,3 +56,7 @@ if estadisticas:
     print(f"Producto mayor stock: {estadisticas['producto_mayor_stock']['nombre']} - {estadisticas['producto_mayor_stock']['cantidad']}")
 else:
     print("Inventario vacio")
+
+ruta = input("Por escribe el nombre del archivo CSV: ")
+guardar_csv(inventario,ruta) 
+

@@ -52,13 +52,16 @@ def calcular_estadisticas(inventario):
     unidades_totales = 0
     valor_total = 0 
     
+    subtotal = (lambda p: p["precio"] * p["cantidad"])
+    
     producto_mas_caro = inventario[0]
     producto_mayor_stock = inventario[0]
     
     for producto in inventario:
         
+        
         unidades_totales += producto["cantidad"]
-        valor_total += producto["precio"]*producto["cantidad"]
+        valor_total += subtotal(producto)
         
         if producto["precio"] > producto_mas_caro["precio"]:
             producto_mas_caro = producto
@@ -72,3 +75,4 @@ def calcular_estadisticas(inventario):
         "producto_mas_caro": producto_mas_caro,
         "producto_mayor_stock": producto_mayor_stock
     }
+
