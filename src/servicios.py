@@ -18,7 +18,7 @@ def mostrar_inventario(inventario):
 
 def buscar_producto(inventario,nombre):
     for producto in inventario:
-        if producto["nombre"].lower() == nombre.lower():
+        if producto["nombre"].lower().strip() == nombre.lower().strip():
             return producto
     return None
 
@@ -26,7 +26,7 @@ def buscar_producto(inventario,nombre):
 def actualizar_producto(inventario,nombre,nuevo_precio=None,nueva_cantidad=None):
     
     for producto in inventario:
-        if producto ["nombre"].lower() == nombre.lower():
+        if producto ["nombre"].lower().strip() == nombre.lower().strip():
             
             if nuevo_precio is not None:
                 producto["precio"] = nuevo_precio

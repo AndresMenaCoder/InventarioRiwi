@@ -30,7 +30,7 @@ def cargar_csv(ruta):
             
             if encabezado != ["nombre","precio","cantidad"]:
                 print("encabezado invalido")
-                return [] , 0
+                return [],0
             
             errores = 0
             
@@ -63,12 +63,12 @@ def cargar_csv(ruta):
     
     except FileNotFoundError:
         print("Este archivo no existe")
-        return [], 0
+        return [],0
     
     except UnicodeDecodeError:
         print("Error de codificacion del archivo")
-        return [], 0
+        return [],0
     
     except Exception as e:
         print(f"Error inesperado: {e}")
-        return [], 0
+        return [],0
