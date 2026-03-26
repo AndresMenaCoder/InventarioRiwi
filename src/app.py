@@ -1,5 +1,5 @@
 from servicios import agregar_producto , mostrar_inventario , buscar_producto , actualizar_producto , eliminar_producto , calcular_estadisticas
-from archivos import guardar_csv
+from archivos import guardar_csv , cargar_csv
 
 inventario = []
 
@@ -51,12 +51,35 @@ estadisticas = calcular_estadisticas(inventario)
 
 if estadisticas:
     print(f"Unidades totales: {estadisticas['unidades_totales']}")
-    print(f"Volar total: {estadisticas['valor_total']}")
+    print(f"Valor total: {estadisticas['valor_total']}")
     print(f"Producto mas caro: {estadisticas['producto_mas_caro']['nombre']} - {estadisticas['producto_mas_caro']['precio']}")
     print(f"Producto mayor stock: {estadisticas['producto_mayor_stock']['nombre']} - {estadisticas['producto_mayor_stock']['cantidad']}")
 else:
     print("Inventario vacio")
 
-ruta = input("Por escribe el nombre del archivo CSV: ")
+ruta = input("Por escribe el nombre del archivo CSV (ej: nombre.csv): ")
 guardar_csv(inventario,ruta) 
 
+
+ruta = input("Ingresar el nombre del archivo CSV: ")
+datos_cargados,errores = cargar_csv(ruta) 
+opcion = input("¿Deseas sobrescribir el inventario actual? (S/N): ").upper()
+
+if opcion == "S":
+    inventario = datos_cargados
+    print("Se sobreescribio el inventario correctamente")
+    print("Accion: Remplazo")
+elif opcion == "N":
+    for producto in datos_cargados:
+        existente = buscar_producto(inventario,producto["nombre"])
+
+        if existente:
+            existente["cantidad"] += producto["cantidad"]
+            existente["precio"] = producto["precio"]
+        else:
+            inventario.append(producto)
+    print("Se ha fusionado correctamente")
+    print("Accion: Fusion")
+
+print(f"Productos cargados: {len(datos_cargados)}")
+print(f"Filas invalidas: {errores}")
