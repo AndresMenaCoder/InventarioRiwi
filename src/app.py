@@ -23,12 +23,38 @@ while True:
         if opcion == 1:
 
             nombre_del_producto = input("Por favor escribe el nombre del producto: ") 
-            precio_del_producto = float(input("Por favor escribe el precio del producto: "))
-            Cantidad_del_producto = int(input("Por favor escribe la cantidad del producto: "))
+            while True:
+                try:
+                    precio_del_producto = float(input("Por favor escribe el precio del producto: "))
+                    if precio_del_producto < 0:
+                        print("El precio no puede ser negativo. Intenta de nuevo.")
+                        continue
+                    break
+                except ValueError:
+                    print("Valor inválido. Por favor ingresa un número para el precio.")
+                    
+            while True:
+                try:
+                    cantidad_del_producto = int(input("Por favor escribe la cantidad del producto: "))
+                    if cantidad_del_producto < 0:
+                        print("La cantidad no puede ser negativa. intenta de nuevo")
+                        continue
+                    break
+                except ValueError:
+                    print("Valor invalido. por favor ingresa un numero entero para la cantidad")
 
-            agregar_producto(inventario,nombre_del_producto,precio_del_producto,Cantidad_del_producto)
-
-            print("Producto agregado correctamente.\n")
+            existente = buscar_producto(inventario, nombre_del_producto)
+            if existente:
+                # Sumar cantidades
+                existente["cantidad"] += cantidad_del_producto
+                # Actualizar precio si difiere
+                if existente["precio"] != precio_del_producto:
+                    existente["precio"] = precio_del_producto
+                print("Producto existente actualizado correctamente.\n")
+            else:
+                # Agregar nuevo producto
+                agregar_producto(inventario, nombre_del_producto, precio_del_producto, cantidad_del_producto)
+                print("Producto agregado correctamente.\n")
 
         elif opcion == 2:
 
@@ -48,8 +74,25 @@ while True:
         elif opcion == 4:
 
             nombre = input("Por favor escribe el producto al cual deseas actualizar: ")
-            nuevo_precio = float(input("Nuevo precio: "))
-            nueva_cantidad = int(input("Nueva cantidad: "))
+            while True:
+                try:
+                    nuevo_precio = float(input("Nuevo precio: "))
+                    if nuevo_precio < 0:
+                        print("El precio no puede ser negativo. Intenta de nuevo.")
+                        continue
+                    break
+                except ValueError:
+                    print("Valor inválido. Por favor ingresa un número para el precio.")
+
+            while True:
+                try:
+                    nueva_cantidad = int(input("Nueva cantidad: "))
+                    if nueva_cantidad < 0:
+                        print("La cantidad no puede ser negativa. Intenta de nuevo.")
+                        continue
+                    break
+                except ValueError:
+                    print("Valor inválido. Por favor ingresa un número entero para la cantidad.")
 
             actualizado = actualizar_producto(inventario,nombre,nuevo_precio,nueva_cantidad)
 
@@ -88,33 +131,66 @@ while True:
 
         elif opcion == 8:
 
-
             ruta = input("Ingresar el nombre del archivo CSV: ")
-            datos_cargados,errores = cargar_csv(ruta)
-            opcion = input("¿Deseas sobrescribir el inventario actual? (S/N): ").upper()
-            print("opcion elegida",opcion)
-
-            if opcion == "S":
-                inventario = datos_cargados
-                print("Se sobreescribio el inventario correctamente")
-                print("Accion: Remplazo")
+    
+            datos_cargados, errores = cargar_csv(ruta)
             
-            elif opcion == "N":
-                for producto in datos_cargados:
-                    existente = buscar_producto(inventario,producto["nombre"])
+            if not datos_cargados:
+                print("No se cargaron productos desde el CSV.")
+                continue
 
-                    if existente:
-                        existente["cantidad"] += producto["cantidad"]
-                        existente["precio"] += producto["precio"]
+            # Paso 1: limpiar duplicados en inventario actual
+            inventario_limpio = {}
+            for producto in inventario:
+                key = producto["nombre"].lower().strip()
+                if key in inventario_limpio:
+                    # Sumar cantidades si hay duplicados
+                    inventario_limpio[key]["cantidad"] += producto["cantidad"]
+                    # Actualizar precio si difiere
+                    if inventario_limpio[key]["precio"] != producto["precio"]:
+                        inventario_limpio[key]["precio"] = producto["precio"]
+                else:
+                    inventario_limpio[key] = producto.copy()
+            
+            inventario.clear()
+            inventario.extend(inventario_limpio.values())
+
+            # Paso 2: decidir sobrescribir o fusionar
+            Decision = input("¿Deseas sobrescribir el inventario actual? (S/N): ").upper()
+            
+            if Decision == "S":
+                inventario.clear()
+                inventario.extend(datos_cargados)
+                print("Se sobreescribió el inventario correctamente")
+                print("Acción: Remplazo")
+
+            elif Decision == "N":
+                # Fusión robusta usando diccionario temporal
+                temp_dict = {}
+                # Productos actuales
+                for producto in inventario:
+                    key = producto["nombre"].lower().strip()
+                    temp_dict[key] = producto.copy()
+                # Productos del CSV
+                for producto_csv in datos_cargados:
+                    key = producto_csv["nombre"].lower().strip()
+                    if key in temp_dict:
+                        temp_dict[key]["cantidad"] += producto_csv["cantidad"]
+                        if temp_dict[key]["precio"] != producto_csv["precio"]:
+                            temp_dict[key]["precio"] = producto_csv["precio"]
                     else:
-                        inventario.append(producto)
+                        temp_dict[key] = producto_csv.copy()
+
+                # Actualizar inventario final
+                inventario.clear()
+                inventario.extend(temp_dict.values())
+
                 print("Se ha fusionado correctamente")
-                print("Accion: Fusion")
-                
-
+                print("Acción: Fusión")
+            
             print(f"Productos cargados: {len(datos_cargados)}")
-            print(f"Filas invalidas: {errores}")
-
+            print(f"Filas inválidas: {errores}")
+            
         elif opcion == 9:
             break
         

@@ -1,11 +1,14 @@
 def agregar_producto(inventario,nombre,precio,cantidad):
-    
+    if precio < 0 or cantidad < 0:
+        print("no se puede agregar un producto con precio o cantidad negativa")
+        return False
     producto ={
-    "nombre": nombre,
-    "precio": precio,
-    "cantidad": cantidad
-    }
+        "nombre": nombre,
+        "precio": precio,
+        "cantidad": cantidad
+        }
     inventario.append(producto)
+    return True
 
 
 def mostrar_inventario(inventario):
@@ -74,5 +77,5 @@ def calcular_estadisticas(inventario):
         "valor_total": valor_total,
         "producto_mas_caro": producto_mas_caro,
         "producto_mayor_stock": producto_mayor_stock
-    }
+    } 
 
