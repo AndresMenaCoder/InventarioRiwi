@@ -23,7 +23,7 @@ def guardar_csv(inventario,ruta,incluir_header = True):
 
 def cargar_csv(ruta):
     inventario = []
-    try:
+    try: 
         with open(ruta,mode="r",encoding="utf-8") as archivo:
             reader = csv.reader(archivo)
             encabezado = next(reader)
